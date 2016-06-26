@@ -1,14 +1,32 @@
-//! reikna prime module
-//! functions for generating prime numbers,
-//! testing for primality, and basic factorization
+//! Module for working with prime numbers.
+//!
+//! This module has functions for generating prime numbers
+//! using a variety of different sieves, testing if numbers
+//! are prime or composite, and preforming simple factorizations.
 
-/// implementation of the sieve of Atkin, a faster
-/// but more complicated sieve than the sieve of 
-/// Eratosthenes
+/// Return a `Vec<u64>` of the primes in [1, max_u64] using the 
+/// Sieve of Atkin.
 ///
-/// returns a _Vec<u64>_ of all the prime numbers
-/// in [1, max]
+/// This function is best suited for sieving with relatively
+/// small maximums, in which case it is very fast. Large maximums
+/// will start to incur negative performance impacts from
+/// memory allocation, which increases linearly with `max_u64`.
+/// For large maximums, `segmented_eratosthenes()` is a better choice.
+/// `prime_sieve()` can be used to choose between the two automatically.
 ///
+/// # Panics
+///
+/// Panics if `max_u64` cannot be cast into a `usize`.
+///
+/// Can panic if `max_u64` is so large that not enough
+/// memory can be allocated for the sieve.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::atkin;
+/// assert_eq!(atkin(20), vec![2, 3, 5, 7, 11, 13, 17, 19]);
+/// ```
 pub fn atkin(max_u64: u64) -> Vec<u64> {
     assert!(max_u64 < ::std::usize::MAX as u64, 
             "sieve max {} is larger than machine word size!", max_u64);
@@ -93,12 +111,25 @@ pub fn atkin(max_u64: u64) -> Vec<u64> {
     primes
 }
 
-/// implementation of the sieve of Eratosthenes,
-/// a basic prime sieve
-/// 
-/// returns a _Vec<u64>_ of all the prime numbers
-/// in [1, max]
+/// Return a `Vec<u64>` of the primes in [1, max_u64] using the 
+/// Sieve of Eratosthenes.
 ///
+/// This function is probably not very useful to most users, 
+/// and is used primarily in validating the other prime sieves.
+///
+/// # Panics
+///
+/// Panics if `max_u64` cannot be cast into a `usize`.
+///
+/// Can panic if `max_u64` is so large that not enough
+/// memory can be allocated for the sieve.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::eratosthenes;
+/// assert_eq!(eratosthenes(20), vec![2, 3, 5, 7, 11, 13, 17, 19]);
+/// ```
 pub fn eratosthenes(max_u64: u64) -> Vec<u64> {
     assert!(max_u64 < ::std::usize::MAX as u64, 
             "sieve max {} is larger than machine word size!", max_u64);
@@ -129,16 +160,31 @@ pub fn eratosthenes(max_u64: u64) -> Vec<u64> {
     primes
 }
 
-/// size of the segmented sieve sections,
-/// also used to determine when prime_sieve() should
-/// switch to using the segmented sieve
-const S_SIEVE_SIZE: u64 = 65536;
-/// segmented version of the sieve of Eratosthenes,
-/// suitable for sieving with a large maximum
-/// 
-/// returns a _Vec<u64>_ of all the prime numbers
-/// in [1, max]
+/// Size of the segmented sieve segments in `segmented_eratosthenes()`
 ///
+/// Also used to determine when prime_sieve() should
+/// switch to using the segmented sieve from the Sieve of Atkin.
+const S_SIEVE_SIZE: u64 = 65536;
+
+/// Return a `Vec<u64>` of the primes in [1, max] using a segmented
+/// Sieve of Eratosthenes.
+///
+/// This function is best suited for sieving with a large max,
+/// otherwise `atkin()` is preferable. `prime_sieve()` can be
+/// used to chose between the two automatically.
+///
+/// The size of the segments is determined by `S_SIEVE_SIZE`.
+///
+/// # Panics
+///
+/// Panics if `max` cannot be cast into a `usize`.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::segmented_eratosthenes;
+/// assert_eq!(segmented_eratosthenes(10), vec![2, 3, 5, 7]);
+/// ```
 pub fn segmented_eratosthenes(max: u64) -> Vec<u64> {
     if max < 2 {
         let ret: Vec<u64> = Vec::new();
@@ -204,14 +250,28 @@ pub fn segmented_eratosthenes(max: u64) -> Vec<u64> {
     primes
 }
 
-/// idiomatic helper function,
-/// uses the sieve of Atkin to generate primes
-/// if max is relatively small, else uses
-/// the segmented sieve of Eratosthenes
+/// Idiomatic prime sieve, returns a `Vec<u64>` of primes in [1, max].
 ///
-/// returns a _Vec<u64>_ of all the prime numbers
-/// in [1, max]
+/// If you want to generate primes, this is probably the function
+/// you want.
 ///
+/// This function will use `atkin()` to generate primes if
+/// `max` is less than `S_SIEVE_SIZE`, otherwise it will use 
+/// `segmented_eratosthenes()`.
+///
+/// See `atkin()` and `segmented_eratosthenes()` for more
+/// information.
+///
+/// # Panics
+/// 
+/// Panics if `max` is too large to cast into a `usize`.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::prime_sieve;
+/// assert_eq!(prime_sieve(20), vec![2, 3, 5, 7, 11, 13, 17, 19]);
+/// ```
 pub fn prime_sieve(max: u64) -> Vec<u64> { 
     if max < S_SIEVE_SIZE { // 2^16
         return atkin(max);
@@ -220,9 +280,24 @@ pub fn prime_sieve(max: u64) -> Vec<u64> {
     segmented_eratosthenes(max)
 }
 
-/// return _true_ if value is a prime number,
-/// and _false_ if it is composite
+/// Return `true` if `value` is prime, and false if it is composite.
 ///
+/// This function works by checking if `value` is a small prime,
+/// the checking if it is divisible by two or three.
+///
+/// Next, a loop is preformed to check if `value` can be represented
+/// in the form `6x +/- 1`, if it can, `value` is composite. Otherwise
+/// it is prime.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::is_prime;
+/// assert_eq!(is_prime(64), false);
+/// assert_eq!(is_prime(97), true);
+/// assert_eq!(is_prime(113), true);
+/// assert_eq!(is_prime(128), false);
+/// ```
 pub fn is_prime(value: u64) -> bool {
     if value < 2 {
         return false;
@@ -248,9 +323,27 @@ pub fn is_prime(value: u64) -> bool {
     true
 }
 
-/// return a _Vec<u64>_ of the value's factorization,
-/// using the supplied _Vec<u64>_ of prime numbers
+/// Return a `Vec<u64>` of the value's factorization,
+/// using the provided list of primes.
 ///
+/// This function preforms factorization by test dividing
+/// `value` for all provided primes in [1, value].
+///
+/// This function is best suited for computing multiple
+/// factorizations, so the primes list can be cached between
+/// calls, or for computing factorizations with a custom list
+/// of "prime factors". For other uses, such as factoring a
+/// single value, `factorize()` may be a wiser choice.
+///
+/// # Examples
+///
+/// Please note this function assumes that `primes` is sorted.
+///
+/// ```
+/// use reikna::prime::{factorize, prime_sieve};
+/// let primes = prime_sieve(200);
+/// assert_eq!(factorize(200), vec![2, 2, 2, 5, 5]); 
+/// ```
 pub fn factorize_wp(mut value: u64, primes: &Vec<u64>) -> Vec<u64> {
     let mut factors: Vec<u64> = Vec::new();
 
@@ -272,15 +365,28 @@ pub fn factorize_wp(mut value: u64, primes: &Vec<u64>) -> Vec<u64> {
     factors
 }
 
-/// helper function to return a _Vec<u64>_ of the value's
-/// factorization without having to externally 
-/// call prime_sieve()
+/// Return a `Vec<u64>` of the value's factorization
 ///
+/// This is a helper function that generates a `Vec` of
+/// primes internally, rather than requiring one to be
+/// explicitly passed in.
+///
+/// # Panics
+///
+/// Panics if `value` causes a panic when provided to
+/// `prime_sieve()`.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::factorize;
+/// assert_eq!(factorize(100), vec![2, 2, 5, 5]); 
+/// ```
 pub fn factorize(value: u64) -> Vec<u64> {
     factorize_wp(value, &prime_sieve(value))
 }
 
-/// simple bitset implementation for prime sieves
+/// Simple bit set implementation for prime sieves
 struct Bitset {
     data: Vec<u8>,
     size: usize
@@ -323,14 +429,12 @@ impl Bitset {
     }
 }
 
-// unit tests for this module
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_prime_sieves() {
+#[test]
+    fn t_prime_sieves() {
         let primes = prime_sieve(0);
         assert_eq!(primes.len(), 0);
 
@@ -361,8 +465,8 @@ mod tests {
         assert_eq!(segmented_eratosthenes(100000), atkin(100000));
     }
 
-    #[test]
-    fn test_is_prime() {
+#[test]
+    fn t_is_prime() {
         assert_eq!(is_prime(0), false);
         assert_eq!(is_prime(1), false);
         assert_eq!(is_prime(10), false);
@@ -374,8 +478,8 @@ mod tests {
         assert_eq!(is_prime(9973), true);
     }
 
-    #[test]
-    fn test_factorize() {
+#[test]
+    fn t_factorize() {
         let vec: Vec<u64> = Vec::new();
 
         assert_eq!(factorize(0), vec);
