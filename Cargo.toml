@@ -1,0 +1,6 @@
+[package]
+name = "reikna"
+version = "0.1.0"
+authors = ["Phillip Heikoop <phillip-h@users.noreply.github.com>"]
+
+[dependencies]
