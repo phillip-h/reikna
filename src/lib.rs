@@ -9,4 +9,5 @@
 //! ease of use in mind.
 
 pub mod figurate;
+pub mod partition;
 pub mod prime;
