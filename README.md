@@ -2,6 +2,8 @@
 
 A fast and lightweight rust math library
 
+[![](https://travis-ci.org/phillip-h/reikna.svg?branch=master)](https://travis-ci.org/phillip-h/reikna)
+
 # about
 
 `reikna` is a math library for rust designed to be fast and lightweight. 
