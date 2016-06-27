@@ -113,7 +113,7 @@ pub fn pentagonal_number(n: i64) -> i64 { figurate(5, n) }
 /// ```
 pub fn hexagonal_number(n: i64) -> i64 { figurate(6, n) }
 
-/// return the `n`th general pentagonal number
+/// Return the `n`th general pentagonal number
 ///
 /// # Examples
 ///
