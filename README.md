@@ -1,8 +1,8 @@
 # reikna
 
-A fast and lightweight rust math library
-
 [![](https://travis-ci.org/phillip-h/reikna.svg?branch=master)](https://travis-ci.org/phillip-h/reikna)
+
+A fast and lightweight rust math library
 
 # about
 
