@@ -78,6 +78,122 @@ pub fn nth_derivative(n: u64, f: &Function) -> Function {
     }
 }
 
+/// Return a function estimating the first derivative of `f`.
+///
+/// This is a helper function and is equivalent to calling
+/// `nth_derivative(1, f)`.
+///
+/// Examples
+///
+/// ```
+/// #[macro_use] extern crate reikna;
+/// # fn main() {
+/// use reikna::derivative::*;
+///
+/// let f = func![|x| x * x];
+///
+/// let first_deriv = derivative(&f);
+///
+/// println!("f(5)  = {}", f(5.0));
+/// println!("f'(5) = {}", first_deriv(5.0));
+/// # }
+///
+/// ```
+///
+/// Outputs:
+///
+/// ``` text
+/// f(5)   = 25
+/// f'(5)  = 10.00000100148668
+/// ```
+pub fn derivative(f: &Function) -> Function {
+    nth_derivative(1, &f)
+}
+
+/// Return a function estimating the second derivative of `f`.
+///
+/// This is a helper function and is equivalent to calling
+/// `nth_derivative(2, f)`.
+///
+/// Examples
+///
+/// ```
+/// #[macro_use] extern crate reikna;
+/// # fn main() {
+/// use reikna::derivative::*;
+///
+/// let f = func![|x| x * x];
+///
+/// let second_deriv = nth_derivative(2, &f);
+///
+/// println!("f(5)   = {}", f(5.0));
+/// println!("f''(5) = {}", second_deriv(5.0));
+/// # }
+///
+/// ```
+///
+/// Outputs:
+///
+/// ``` text
+/// f(5)   = 25
+/// f''(5) = 2.000177801164682
+/// ```
+pub fn second_derivative(f: &Function) -> Function {
+    nth_derivative(2, &f)
+}
+
+/// Estimate the value of the derivative of `f` at `x`
+///
+/// This is a helper function that calls `derivative` and
+/// then calls the resulting function with `x`.
+///
+/// Examples
+///
+/// ```
+/// #[macro_use] extern crate reikna;
+/// # fn main() {
+/// use reikna::derivative::*;
+///
+/// let f = func![|x| (x + 4.0) * (x + 4.0)];
+/// println!("f'(-4.0) = {}", slope_at(&f, -4.0));
+/// # }
+///
+/// ```
+/// Outputs:
+///
+/// ```text
+/// f'(-4.0) = 0.000001000000000279556
+/// ```
+pub fn slope_at(f: &Function, x: f64) -> f64 {
+    derivative(f)(x)
+}
+
+/// Estimate the value of the second derivative of `f` at `x`
+///
+/// This is a helper function that calls `second_derivative` and
+/// then calls the resulting function with `x`.
+///
+/// Examples
+///
+/// ```
+/// #[macro_use] extern crate reikna;
+/// # fn main() {
+/// use reikna::derivative::*;
+///
+/// let f = func![|x| (x + 4.0) * (x + 4.0)];
+/// println!("f''(-4.0) = {}", concavity_at(&f, -4.0));
+/// # }
+///
+/// ```
+/// Outputs:
+///
+/// ```text
+/// f''(-4.0) = 2.0000000005591114
+/// ```
+pub fn concavity_at(f: &Function, x: f64) -> f64 {
+    second_derivative(f)(x)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
