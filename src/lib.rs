@@ -8,6 +8,9 @@
 //! and calculus. The library is designed with speed and
 //! ease of use in mind.
 
+#[macro_use] pub mod func;
+
+pub mod derivative;
 pub mod figurate;
 pub mod partition;
 pub mod prime;
