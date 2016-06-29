@@ -2,6 +2,8 @@
 
 [![](https://travis-ci.org/phillip-h/reikna.svg?branch=master)](https://travis-ci.org/phillip-h/reikna)
 
+[![](https://img.shields.io/crates/v/reikna.svg)](https://crates.io/crates/reikna)
+
 A fast and lightweight rust math library
 
 # about
