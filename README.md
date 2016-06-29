@@ -12,8 +12,9 @@ A fast and lightweight rust math library
 
 # usage
 
-Clone the repository, and copy the files into your project. A crate should
-be available on `crates.io` in the near future.
+(Add the crate to your Cargo.toml](https://crates.io/crates/reikna)
+
+Alternatively, add clone the repository and add the files manually.
 
 Documentation is available
 [here](https://phillip-h.github.io/reikna/reikna/index.html), 
