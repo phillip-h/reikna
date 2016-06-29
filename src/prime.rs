@@ -164,7 +164,7 @@ pub fn eratosthenes(max_u64: u64) -> Vec<u64> {
 ///
 /// Also used to determine when prime_sieve() should
 /// switch to using the segmented sieve from the Sieve of Atkin.
-pub const S_SIEVE_SIZE: u64 = 65536;
+pub const S_SIEVE_SIZE: u64 = 65_536;
 
 /// Return a `Vec<u64>` of the primes in [1, max] using a segmented
 /// Sieve of Eratosthenes.
