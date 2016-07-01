@@ -11,6 +11,7 @@
 #[macro_use] pub mod func;
 
 pub mod derivative;
+pub mod factor;
 pub mod figurate;
 pub mod partition;
 pub mod prime;
