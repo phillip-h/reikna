@@ -1,13 +1,13 @@
 [package]
 name = "reikna"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Phillip Heikoop <phillip-h@users.noreply.github.com>"]
 
 description = "A work in progress math library"
 documentation = "https://phillip-h.github.io/reikna/reikna/index.html"
 repository = "https://github.com/phillip-h/reikna"
 
-keywords = ["math"]
+keywords = ["math", "mathematics"]
 
 license = "MIT"
 
