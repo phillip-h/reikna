@@ -4,9 +4,11 @@
 //! computing the LCM and GCD of integers, and testing if
 //! integers are perfect squares and perfect cubes.
 
+use std::cmp::min;
 use std::mem;
+use super::prime;
 
-/// Find the GCD of `a` and `b` using the Euclidian algorithm.
+/// Find the GCD of `a` and `b` using the Euclidean algorithm.
 ///
 /// This function will return `0` if both arguments are zero.
 ///
@@ -34,7 +36,7 @@ pub fn gcd(mut a: u64, mut b: u64) -> u64 {
 /// Return the GCD of the set of integers
 ///
 /// This function works by applying the fact that the
-/// GCD is both communative and associative, and as such the GCD
+/// GCD is both commutative and associative, and as such the GCD
 /// of a set can be found by computing the GCD of each of its
 /// members with a running GCD total.
 ///
@@ -75,7 +77,8 @@ pub fn coprime(a: u64, b: u64) -> bool {
 /// Return the LCM of `a` and `b`.
 ///
 /// This function works by computing the GCD of `a` and `b`
-/// using `gcd()`, then appying the fact that 
+/// using `gcd()`, then applying the fact that 
+///
 /// ```text
 ///               a * b
 /// lcm(a, b) = ---------
@@ -96,10 +99,10 @@ pub fn lcm(a: u64, b: u64) -> u64 {
     a * b / gcd(a, b)
 }
 
-/// Return the GCD of the set of integers
+/// Return the LCM of the set of integers
 ///
 /// This function works by applying the fact that the
-/// LCM is both communative and associative, and as such the LCM
+/// LCM is both commutative and associative, and as such the LCM
 /// of a set can be found by computing the LCM of each of its
 /// members with a running LCM total.
 ///
@@ -217,9 +220,195 @@ pub fn perfect_cube(n: u64) -> bool {
     root_i * root_i * root_i == n
 }
 
+/// Extract a factor of `val` using `entropy` as a seed
+/// value.
+///
+/// This function will extract a non-trivial factor of `val`
+/// using Brent's modification of Pollard's Rho Algorithm.
+///
+/// This is one of the functions used by `quick_factorize()`,
+/// it is applied if value being factor is considered to have
+/// "large" magnitude.
+///
+/// This function is not very useful on its own, and should be
+/// integrated into a more general factorization function rather than
+/// used directly.
+pub fn rho(val: u64, entropy: u64) -> u64 {
+    if val == 0 {
+        return 1;
+    }
+
+    let entropy = entropy.wrapping_mul(val);
+    let c = entropy & 0xff;
+    let u = entropy & 0x7f;
+
+    let mut r: u64 = 1;
+    let mut q: u64 = 1;
+    let mut y: u64 = entropy & 0xf;
+
+    let mut fac = 1;
+
+    let mut y_old = 0;
+    let mut x = 0;
+
+    let f = |x: u64| (x.wrapping_mul(x) + c) % val;
+
+    while fac == 1 {
+        x = y;
+
+        for _ in 0..r {
+            y = f(y);
+        }
+
+        let mut k = 0;
+        while k < r && fac == 1 {
+            y_old = y;
+
+            for _ in 0..min(u, r - k) {
+                y = f(y);
+
+                match x > y {
+                    true  => q = q.wrapping_mul(x - y) % val,
+                    false => q = q.wrapping_mul(y - x) % val,
+                }
+            }
+
+            fac = gcd(q, val);
+            k += u;
+        }
+        
+        r *= 2;
+    }
+
+
+    while fac == val || fac <= 1 {
+        y_old = f(y_old);
+
+        match x > y_old {
+            true  => fac = gcd(x - y_old, val),
+            false => fac = gcd(y_old - x, val),
+        }
+    }
+
+    fac
+}
+
+/// The largest number considered "small" by `quick_factorize_wsp()`.
+///
+/// Values less than this will be factored with `prime::factorize_wp()`,
+/// this is also the value used as the maximum argument to `prime_sieve()`
+/// in the `quick_factorize()` helper function.
+pub const MAX_SMALL_NUM: u64 = 65_536;
+
+/// Return a `Vec<u64>` of `value`'s prime factorization,
+/// using `sprimes` as a list of small primes;
+///
+/// `sprimes` should be a sorted list of the prime numbers in
+/// `[1, MAX_SMALL_NUM]`, or else this function will not
+/// behave properly. A suitable list can be generated using
+/// `prime::prime_sieve(MAX_SMALL_NUM)`.
+///
+/// Alternatively, if only a few values are being factored,
+/// `quick_factorize()` can be used in lieu of this function and
+/// an explicit list of primes.
+///
+/// This function will factor "small" values, i.e., those less
+/// than `MAX_SMALL_NUM`, using `prime::factorize_wp()`, which
+/// in turn factors by trial division over a list of primes. This
+/// is the fastest way of factoring relatively small values.
+///
+/// Large values are factored using Brent's modification of
+/// Pollard's Rho Algorithm, implemented in the function `rho()`.
+///
+/// Note this function can take a long time if the value being 
+/// factored is a large prime or a value with one very large factor.
+/// The correct factorization will be returned for these values,
+/// but it is best to filter them out of any data set being factored
+/// before hand.
+///
+/// The factor list this function returns is sorted.
+/// 
+/// # Examples
+///
+/// ```
+/// use reikna::factor::*;
+/// use reikna::prime;
+/// let sprimes = prime::prime_sieve(MAX_SMALL_NUM);
+/// assert_eq!(quick_factorize_wsp(65_536, &sprimes), vec![2; 16]);
+/// assert_eq!(quick_factorize_wsp(9_223_372_036_854_775_807, &sprimes), 
+///            vec![7, 7, 73, 127, 337, 92737, 649657]);
+/// ```
+pub fn quick_factorize_wsp(mut val: u64, 
+                           sprimes: &Vec<u64>) -> Vec<u64> {
+    if val < MAX_SMALL_NUM {
+        return prime::factorize_wp(val, sprimes);
+    }
+
+    let mut factors: Vec<u64> = Vec::with_capacity(64);
+
+    while val & 0x01 == 0 {
+        val >>= 1;
+        factors.push(2);
+    }
+
+    let mut e = 2;
+    while val > 1 {
+        if prime::is_prime(val) {
+            factors.push(val);
+            break;
+        }
+
+        let factor = rho(val, e);
+
+        if prime::is_prime(factor) {
+            factors.push(factor);
+        } else if factor == val {
+            e += 1;
+            continue;
+        } else {
+            factors.extend_from_slice(
+                   &quick_factorize_wsp(factor, sprimes));
+        }
+
+        val /= factor;
+    }
+
+    factors.sort();
+    factors
+}
+
+/// Return a `Vec<u64>` of `value`'s prime factorization.
+///
+/// This is a helper function that calls `quick_factorize_wsp()`,
+/// using `value` and a generated list of primes for the arguments.
+/// See `quick_factorize_wsp()` for more information.
+///
+/// Because this function generates a list of primes each time it
+/// is called, it is preferable to use `quick_factorize_wsp()` 
+/// directly with an explicit list of primes if numerous factorizations
+/// are being computed.
+///
+/// # Panics
+///
+/// Panics if `prime_sieve()`, see the documentation for
+/// this function for more information.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::factor::quick_factorize;
+/// assert_eq!(quick_factorize(65_536), vec![2; 16]);
+/// assert_eq!(quick_factorize(9_223_372_036_854_775_807), 
+///            vec![7, 7, 73, 127, 337, 92737, 649657]);
+/// ```
+pub fn quick_factorize(value: u64) -> Vec<u64> {
+    quick_factorize_wsp(value, &prime::prime_sieve(MAX_SMALL_NUM))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use super::super::prime::is_prime;
 
 #[test]
     fn t_gcd() {
@@ -300,6 +489,56 @@ mod tests {
         assert_eq!(perfect_cube(8_589_934_593), false);
         assert_eq!(perfect_cube(11_529_2150_460_6846_976), true);
         assert_eq!(perfect_cube(11_529_2150_460_6846_975), false);
+    }
+
+#[test]
+    fn t_quick_factorize() {
+        assert_eq!(quick_factorize(0), Vec::new());
+        assert_eq!(quick_factorize(1), Vec::new());
+
+        let test_vals = vec![125, 97, 168, 256, 1789, 34567,
+                             653123,
+                             4593140,
+                             13461780,
+                             982357223,
+                             72314573234,
+                             517825353462,
+                             8735263124568,
+                             128735128735049,
+                             1302131490435579,
+                             90977992317385808,
+                             (2f64.powf(63.0)) as u64 - 1];
+
+        for val in test_vals.iter() {
+            let factors = quick_factorize(*val);
+
+            let prod: u64 = factors.iter().fold(1, |acc, x| acc * *x);
+            assert_eq!(*val, prod);
+
+            for fac in factors.iter() {
+                assert_eq!(is_prime(*fac), true);
+            }
+        }
+    }
+
+#[test]
+#[ignore]
+    fn t_quick_factorize_long() {
+        let test_vals = vec![(2f64.powf(61.0)) as u64 - 1,
+                             (2f64.powf(31.0)) as u64 - 1,
+                             (2f64.powf(19.0)) as u64 - 1,
+                             (2f64.powf(17.0)) as u64 - 1,];
+        
+        for val in test_vals.iter() {
+            let factors = quick_factorize(*val);
+
+            let prod = factors.iter().fold(1, |acc, x| acc * *x);
+            assert_eq!(*val, prod);
+
+            for fac in factors.iter() {
+                assert_eq!(super::super::prime::is_prime(*fac), true);
+            }
+        }
     }
 
 }
