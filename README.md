@@ -8,6 +8,9 @@ A fast and lightweight rust math library
 
 `reikna` is a math library for rust designed to be fast and lightweight. 
 
+More information, including examples, can be found 
+[here](https://phillip-h.github.io/reikna/reikna/index.html). 
+
 # usage
 
 [Add the crate to your Cargo.toml](https://crates.io/crates/reikna)
