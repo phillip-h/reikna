@@ -136,8 +136,7 @@ pub fn eratosthenes(max_u64: u64) -> Vec<u64> {
     let max = max_u64 as usize;
 
     if max == 0 {
-        let res: Vec<u64> = Vec::new();
-        return res;
+        return Vec::new();
     }
 
     let mut sieve = Bitset::new(max + 1);
@@ -187,8 +186,7 @@ pub const S_SIEVE_SIZE: u64 = 65_536;
 /// ```
 pub fn segmented_eratosthenes(max: u64) -> Vec<u64> {
     if max < 2 {
-        let ret: Vec<u64> = Vec::new();
-        return ret;
+        return Vec::new();
     }
 
     // generate small primes used for sieving
