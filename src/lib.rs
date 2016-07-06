@@ -9,7 +9,7 @@
 //! ease of use in mind.
 //!
 //! # Usage
-//! 
+//!
 //! This library is on `crates.io`, and can be added to your
 //! project by placing the following into your `Cargo.toml`
 //!
@@ -47,15 +47,17 @@
 //! * `prime` -- Prime sieves, basic factoring algorithms, and primality
 //!              tests.
 //!
+//! * `totient` -- Compute Euler's Totient Function.
+//!
 //! # Examples
-//! 
+//!
 //! ## Compute the number of primes under one million
 //!
 //! ```
 //! # extern crate reikna;
 //! # fn main() {
 //! use reikna::prime::prime_sieve;
-//! 
+//!
 //! let primes = prime_sieve(1_000_000);
 //! println!("there are {} primes under one million!", primes.len());
 //! # }
@@ -67,14 +69,14 @@
 //! # extern crate reikna;
 //! # fn main() {
 //! use reikna::factor::quick_factorize;
-//! 
+//!
 //! let my_number = 15_814_272_409_530_912_054;
 //! let factors = quick_factorize(my_number);
 //! println!("The prime factorization of {} is:", my_number);
 //! println!("{:?}", factors);
 //! }
 //! ```
-//! 
+//!
 //! Outputs:
 //!
 //! ```text
@@ -93,18 +95,18 @@
 //!
 //! ```
 //! extern crate reikna;
-//! 
+//!
 //! use reikna::prime::prime_sieve;
-//! 
+//!
 //! pub fn main() {
-//!     
+//!
 //!     // generate primes less than one million, removing
 //!     // the single digit ones.
 //!     let primes = &prime_sieve(1_000_000)[4..];
-//! 
-//! 
+//!
+//!
 //!     let mut data = [[0u64; 10]; 10]; // 10x10 array to store the data
-//!     
+//!
 //!     // loop through the primes and count digit frequency
 //!     let mut old_last_digit = primes[0] % 10;
 //!     for i in 1..primes.len() {
@@ -112,27 +114,27 @@
 //!         data[old_last_digit as usize][last_digit as usize] += 1;
 //!         old_last_digit = last_digit;
 //!     }
-//! 
+//!
 //!     // store the totals into the 0's column, since it's not
 //!     // being used for anything
 //!     for i in 1..10 {
 //!         data[0][i] = data[i].iter().fold(0, |acc, x| acc + x);
 //!     }
-//! 
+//!
 //!     // print out the data
 //!     for i in vec![1, 3, 7, 9] {
 //!         println!("primes ending in '{}':", i);
 //!         println!(" * total -- {}", data[0][i]);
-//! 
+//!
 //!         for k in vec![1, 3, 7, 9] {
 //!             println!(" * % next prime ending in '{}' -- {}%",
 //!                      k, data[i][k] as f64 / data[0][i] as f64 * 100.0);
 //!         }
-//! 
+//!
 //!         println!("");
 //!     }
 //! }
-//! ``` 
+//! ```
 //! By changing the max value, it can be observed that the bias
 //! shrinks as the max grows.
 
@@ -143,3 +145,4 @@ pub mod factor;
 pub mod figurate;
 pub mod partition;
 pub mod prime;
+pub mod totient;
