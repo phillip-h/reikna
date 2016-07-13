@@ -338,8 +338,7 @@ pub fn is_prime(value: u64) -> bool {
 /// Please note this function assumes that `primes` is sorted.
 ///
 /// ```
-/// use reikna::prime::{factorize, prime_sieve};
-/// let primes = prime_sieve(200);
+/// use reikna::prime::factorize;
 /// assert_eq!(factorize(200), vec![2, 2, 2, 5, 5]); 
 /// ```
 pub fn factorize_wp(mut value: u64, primes: &Vec<u64>) -> Vec<u64> {
