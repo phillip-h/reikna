@@ -47,6 +47,8 @@
 //! * `prime` -- Prime sieves, basic factoring algorithms, and primality
 //!              tests.
 //!
+//! * `prime_count` -- Compute the value of the prime-counting function.
+//!
 //! * `totient` -- Compute Euler's Totient Function.
 //!
 //! # Examples
@@ -145,4 +147,5 @@ pub mod factor;
 pub mod figurate;
 pub mod partition;
 pub mod prime;
+pub mod prime_count;
 pub mod totient;
