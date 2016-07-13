@@ -200,25 +200,21 @@ mod tests {
 
 #[test]
     fn t_nth_derivative() {
-        macro_rules! assert_fp { // todo -- make a real macro for this
-            ($a:expr, $b:expr) => (assert_eq!($a.round() as i64, $b));
-        }
-
         let f = func!(|x: f64| x * x * x + 5.0);
         let f_deriv = derivative(&f);
         let f_s_deriv = second_derivative(&f);
 
-        assert_fp!(f(0.0), 5);
-        assert_fp!(f(4.0), 69);
-        assert_fp!(f(-2.0), -3);
+        assert_fp!(f(0.0), 5.0, 0.001);
+        assert_fp!(f(4.0), 69.0, 0.001);
+        assert_fp!(f(-2.0), -3.0, 0.001);
 
-        assert_fp!(f_deriv(0.0), 0);
-        assert_fp!(f_deriv(4.0), 48);
-        assert_fp!(f_deriv(-2.0), 12);
+        assert_fp!(f_deriv(0.0), 0.0, 0.01);
+        assert_fp!(f_deriv(4.0), 48.0, 0.01);
+        assert_fp!(f_deriv(-2.0), 12.0, 0.01);
 
-        assert_fp!(f_s_deriv(0.0), 0);
-        assert_fp!(f_s_deriv(4.0), 24);
-        assert_fp!(f_s_deriv(-2.0), -12);
+        assert_fp!(f_s_deriv(0.0), 0.0, 0.1);
+        assert_fp!(f_s_deriv(4.0), 24.0, 0.1);
+        assert_fp!(f_s_deriv(-2.0), -12.0, 0.1);
 
     }
 
