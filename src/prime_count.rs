@@ -6,6 +6,10 @@
 
 use super::prime::prime_sieve;
 
+/// Constant string of the uppercase Pi symbol,
+/// often used to represent the prime-counting function.
+pub const PI_SYMBOL: &'static str = "π";
+
 /// Return the number of prime numbers less than or equal to `x`.
 ///
 /// This function works by using a lookup table if `x` is very small
