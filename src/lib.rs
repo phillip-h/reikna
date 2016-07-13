@@ -31,6 +31,8 @@
 //! A list of the modules currently included in this crate, along
 //! with a brief description of each.
 //!
+//! * `continued_fraction` -- Generate and expand continued fractions.
+//!
 //! * `derivative` -- Estimate derivatives of functions, along with slope
 //!                   and concavity.
 //!
@@ -140,8 +142,10 @@
 //! By changing the max value, it can be observed that the bias
 //! shrinks as the max grows.
 
-#[macro_use] pub mod func;
+#[macro_use] mod macros;
 
+#[macro_use] pub mod func;
+pub mod continued_fraction;
 pub mod derivative;
 pub mod factor;
 pub mod figurate;
@@ -149,3 +153,4 @@ pub mod partition;
 pub mod prime;
 pub mod prime_count;
 pub mod totient;
+
