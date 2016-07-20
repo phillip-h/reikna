@@ -12,7 +12,7 @@ pub use super::func::*;
 /// by having an `h` closer to zero, and the decrease decrease 
 /// in accuracy caused by floating point imprecision with very 
 /// small values.
-pub const EPSILON: f64 = 10.0e-7;
+pub const EPSILON: f64 = 5.0e-7;
 
 /// Return a `Function` estimating the `n`th derivative of `f`.
 ///
@@ -68,13 +68,13 @@ pub fn nth_derivative(n: u64, f: &Function) -> Function {
     let f_copy = f.clone();
     let deriv: Function = func!(
         move |x: f64| {
-            (f_copy(x + EPSILON) - f_copy(x)) / EPSILON
+            (f_copy(x + EPSILON) - f_copy(x - EPSILON)) / (EPSILON * 2.0)
     });
 
     match n {
         0 => f.clone(),
         1 => deriv,
-        _ => nth_derivative(n - 1, & deriv),
+        _ => nth_derivative(n - 1, &deriv),
     }
 }
 
@@ -204,13 +204,13 @@ mod tests {
         let f_deriv = derivative(&f);
         let f_s_deriv = second_derivative(&f);
 
-        assert_fp!(f(0.0), 5.0, 0.001);
-        assert_fp!(f(4.0), 69.0, 0.001);
-        assert_fp!(f(-2.0), -3.0, 0.001);
+        assert_fp!(f(0.0), 5.0, 0.0001);
+        assert_fp!(f(4.0), 69.0, 0.0001);
+        assert_fp!(f(-2.0), -3.0, 0.0001);
 
-        assert_fp!(f_deriv(0.0), 0.0, 0.01);
-        assert_fp!(f_deriv(4.0), 48.0, 0.01);
-        assert_fp!(f_deriv(-2.0), 12.0, 0.01);
+        assert_fp!(f_deriv(0.0), 0.0, 0.001);
+        assert_fp!(f_deriv(4.0), 48.0, 0.001);
+        assert_fp!(f_deriv(-2.0), 12.0, 0.001);
 
         assert_fp!(f_s_deriv(0.0), 0.0, 0.1);
         assert_fp!(f_s_deriv(4.0), 24.0, 0.1);
