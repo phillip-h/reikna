@@ -144,8 +144,10 @@ pub fn second_derivative(f: &Function) -> Function {
 
 /// Estimate the value of the derivative of `f` at `x`
 ///
-/// This is a helper function that calls `derivative` and
-/// then calls the resulting function with `x`.
+/// This function works by applying the limit definition of
+/// the derivative at `x` in the same way that `nth_derivative()`
+/// does. See the documentation for `nth_derivative()` for more
+/// information.
 ///
 /// Examples
 ///
@@ -165,13 +167,22 @@ pub fn second_derivative(f: &Function) -> Function {
 /// f'(-4.0) = 0.000001000000000279556
 /// ```
 pub fn slope_at(f: &Function, x: f64) -> f64 {
-    derivative(f)(x)
+    (f(x + EPSILON) - f(x - EPSILON)) / (EPSILON * 2.0)
 }
 
 /// Estimate the value of the second derivative of `f` at `x`
 ///
-/// This is a helper function that calls `second_derivative` and
-/// then calls the resulting function with `x`.
+/// This function works by applying the limit definition of
+/// the derivative twice, once to estimate the first derivative of `f()`
+/// at two points, then once again to estimate the concavity.
+///
+/// The calculation is equivalent to:
+///
+/// ```text
+///                     f(x + h) - 2f(x) * 2 + f(x - h)
+/// f''(x) = lim        -------------------------------
+///          h -> 0                    h^2 
+/// ```
 ///
 /// Examples
 ///
@@ -191,7 +202,8 @@ pub fn slope_at(f: &Function, x: f64) -> f64 {
 /// f''(-4.0) = 2.0000000005591114
 /// ```
 pub fn concavity_at(f: &Function, x: f64) -> f64 {
-    second_derivative(f)(x)
+      (f(x + EPSILON * 2.0) - f(x) * 2.0 + f(x - EPSILON * 2.0)) 
+    / (EPSILON * 4.0 * EPSILON)
 }
 
 #[cfg(test)]
