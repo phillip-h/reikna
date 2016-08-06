@@ -383,6 +383,36 @@ pub fn factorize(value: u64) -> Vec<u64> {
     factorize_wp(value, &prime_sieve(value))
 }
 
+/// Return the smallest prime number greater than `n`.
+///
+/// This function works by adding `2` to `n`, then testing
+/// `n`'s primality with `is_prime()`. If `n` is initially
+/// even, `1` is added to it. If the resulting value is not
+/// prime, the normal sequence continues
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::next_prime;
+/// assert_eq!(next_prime(5), 7);
+/// assert_eq!(next_prime(95), 97);
+/// ```
+pub fn next_prime(mut n: u64) -> u64 {
+    if n == 0 || n == 1 {
+        return 2;
+    }
+
+    if n & 0x01 == 0 {
+        n |= 0x01;
+        if is_prime(n) { return n; }
+    }
+    
+    loop {
+        n += 2;
+        if is_prime(n) { return n; }
+    }
+}
+
 /// Simple bit set implementation for prime sieves
 struct Bitset {
     data: Vec<u8>,
@@ -490,6 +520,19 @@ mod tests {
 
         let vec: Vec<u64> = vec![2, 2, 5, 5];
         assert_eq!(factorize(100), vec);
+    }
+
+#[test]
+    fn t_next_prime() {
+        assert_eq!(next_prime(0), 2);
+        assert_eq!(next_prime(1), 2);
+        assert_eq!(next_prime(2), 3);
+        assert_eq!(next_prime(3), 5);
+        assert_eq!(next_prime(4), 5);
+        assert_eq!(next_prime(15), 17);
+        assert_eq!(next_prime(39), 41);
+        assert_eq!(next_prime(98), 101);
+        assert_eq!(next_prime(1_299_821), 1_299_827);
     }
 }
 
