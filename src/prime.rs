@@ -165,6 +165,117 @@ pub fn eratosthenes(max_u64: u64) -> Vec<u64> {
 /// switch to using the segmented sieve from the Sieve of Atkin.
 pub const S_SIEVE_SIZE: u64 = 65_536;
 
+/// Macro representing the body of a segmented Sieve
+/// of Eratosthenes.
+///
+/// This macro is useful for preforming operations on
+/// ranges of prime numbers that would be too large to
+/// store in memory (such as the `prime_sieve()` family of
+/// functions.
+///
+/// The syntax for this macro is
+///
+/// ```text
+/// segmented_sieve(max (identifier), candidate (identifier),
+///                 callback (expression));
+/// ```
+///
+/// Where `max` is an identifier where the max value for the sieve
+/// can be found, `candidate` is an identifier that exposes each
+/// prime found by the sieve, and `expression` is a callback expression
+/// that is ran every time a prime is found.
+///
+/// Note -- this routine will never include the number `2`! It is a
+/// special case and must be dealt with separately.
+///
+/// Note -- this macro assumes that several members of `prime` are
+/// also in scope! The following `use` statement should work:
+///
+/// ```
+/// use reikna::prime::{Bitset, S_SIEVE_SIZE, prime_sieve};
+/// ```
+///
+/// # Panics
+/// 
+/// Panics if `prime_sieve()` panics. See the documentation of 
+/// `prime_sieve()` for more information.
+///
+/// # Examples
+///
+/// Find the sum of the primes in `[0..1,000,000]`.
+///
+/// ```
+/// #[macro_use] extern crate reikna;
+/// use reikna::prime::{Bitset, S_SIEVE_SIZE, prime_sieve};
+/// fn main() {
+///     let max = 1_000_000;
+///     let mut sum = 2;
+///
+///     segmented_sieve!(max, candidate, sum += candidate);
+///
+///     println!("Sum of primes in [0, {}] -- {}", max, sum);
+/// }
+/// ```
+#[macro_export]
+macro_rules! segmented_sieve {
+    ($max:ident, $candidate:ident, $callback:expr) => {
+        // generate small primes used for sieving
+        let limit = ($max as f64).sqrt() as u64 + 1;
+        let small_primes = prime_sieve(limit);
+
+        // create the sieve 
+        let mut sieve = Bitset::new(S_SIEVE_SIZE as usize);
+
+        // create a vec of active sieving primes and their offsets
+        let mut sieve_primes: Vec<u64> = Vec::new();
+        let mut offsets: Vec<u64> = Vec::new();
+
+        // cross-loop variables
+        let mut small = 2;
+        let mut $candidate = 3; 
+
+        // calculate sieve end condition
+        let end = ($max as f64 / S_SIEVE_SIZE as f64).ceil() as u64;
+        for pos in (0..end).map(|pos| pos * S_SIEVE_SIZE) {
+            sieve.one();
+
+            // calculate the upper boundary
+            let mut pos_h = pos + S_SIEVE_SIZE as u64 - 1;
+            if pos_h > $max { pos_h = $max;}
+
+            // add any new small primes to the sieve vec
+            while small * small <= pos_h {
+                if small_primes.iter().any(|x| *x == small) {
+                    sieve_primes.push(small);
+                    offsets.push(small * small - pos);
+                }
+                small += 1;
+            }
+
+            // preform the sieve
+            for i in 1..sieve_primes.len() {
+                let mut j = offsets[i];
+                let k = sieve_primes[i] * 2;
+
+                while j < S_SIEVE_SIZE as u64 {
+                    sieve.set(j as usize, false);
+                    j += k;
+                }
+                offsets[i] = j - S_SIEVE_SIZE as u64;
+            }
+
+            // collect primes, call the callback expression
+            while $candidate <= pos_h {
+                if sieve.read(($candidate - pos) as usize) {
+                    $callback
+                }
+                $candidate += 2;
+            }
+
+        }
+    }
+}
+
 /// Return a `Vec<u64>` of the primes in [1, max] using a segmented
 /// Sieve of Eratosthenes.
 ///
@@ -189,63 +300,49 @@ pub fn segmented_eratosthenes(max: u64) -> Vec<u64> {
         return Vec::new();
     }
 
-    // generate small primes used for sieving
-    let limit = (max as f64).sqrt() as u64 + 1;
-    let small_primes = prime_sieve(limit);
-
-    // create the sieve and results vec
     let mut primes: Vec<u64> = vec![2];
-    let mut sieve = Bitset::new(S_SIEVE_SIZE as usize);
-
-    // create a vec of active sieving primes and their offsets
-    let mut sieve_primes: Vec<u64> = Vec::new();
-    let mut offsets: Vec<u64> = Vec::new();
-
-    // cross-loop variables
-    let mut small = 2;
-    let mut prime_candidate = 3; 
-
-    // calculate sieve end condition
-    let end = (max as f64 / S_SIEVE_SIZE as f64).ceil() as u64;
-    for pos in (0..end).map(|pos| pos * S_SIEVE_SIZE) {
-        sieve.one();
-
-        // calculate the upper boundary
-        let mut pos_h = pos + S_SIEVE_SIZE as u64 - 1;
-        if pos_h > max { pos_h = max;}
-
-        // add any new small primes to the sieve vec
-        while small * small <= pos_h {
-            if small_primes.iter().any(|x| *x == small) {
-                sieve_primes.push(small);
-                offsets.push(small * small - pos);
-            }
-            small += 1;
-        }
-
-        // preform the sieve
-        for i in 1..sieve_primes.len() {
-            let mut j = offsets[i];
-            let k = sieve_primes[i] * 2;
-
-            while j < S_SIEVE_SIZE as u64 {
-                sieve.set(j as usize, false);
-                j += k;
-            }
-            offsets[i] = j - S_SIEVE_SIZE as u64;
-        }
-
-        // collect primes
-        while prime_candidate <= pos_h {
-            if sieve.read((prime_candidate - pos) as usize) {
-                primes.push(prime_candidate);
-            }
-            prime_candidate += 2;
-        }
-
-    }
+    segmented_sieve!(max, candidate, {primes.push(candidate);});
 
     primes
+}
+
+/// Return the Nth prime number, starting with `P0 = 2`.
+///
+/// This function works by sieving the range `[0..u64::MAX]`,
+/// and returning after the Nth prime is found.
+///
+/// If the Nth prime is not in this range, this function will
+/// panic.
+///
+/// # Panics
+///
+/// Panics if the Nth prime is greater than `u64::MAX`.
+///
+/// # Examples
+///
+/// ```
+/// use reikna::prime::nth_prime;
+/// assert_eq!(nth_prime(3), 7);
+/// assert_eq!(nth_prime(24), 97);
+/// ```
+pub fn nth_prime(n: u64) -> u64 {
+    match n {
+        0 => return 2,
+        1 => return 3,
+        2 => return 5,
+        3 => return 7,
+        _ => (),
+    }
+
+    let nf = (n + 1) as f64;
+    let max = ((nf * nf.ln()) + (nf * nf.ln().ln())).ceil() as u64;
+    let mut count = 1;
+    segmented_sieve!(max, candidate, { 
+                                        if count == n { return candidate; }
+                                        count += 1; 
+                                     });
+
+    panic!("Nth prime of N = {} is larger than u64::MAX!");
 }
 
 /// Idiomatic prime sieve, returns a `Vec<u64>` of primes in [1, max].
@@ -414,24 +511,30 @@ pub fn next_prime(mut n: u64) -> u64 {
 }
 
 /// Simple bit set implementation for prime sieves
-struct Bitset {
+///
+/// Please note that this struct is not intended for
+/// general use, and is only publicly exposed so
+/// the `segmented_sieve!` macro can work.
+pub struct Bitset {
     data: Vec<u8>,
     size: usize
 }
 
 impl Bitset {
-    fn new(size: usize) -> Bitset {
+#![allow(missing_docs)]
+
+    pub fn new(size: usize) -> Bitset {
         let size_bytes = size + (size % 8);
         Bitset { data: vec![0; size_bytes], size: size }
     }
 
-    fn one(&mut self) {
+    pub fn one(&mut self) {
         for byte in self.data.iter_mut() {
             *byte = 0xff;
         }
     }
 
-    fn read(&self, pos: usize) -> bool {
+    pub fn read(&self, pos: usize) -> bool {
         self.data[pos / 8] & (0x01 << pos % 8) != 0x00
     }
 
@@ -439,7 +542,7 @@ impl Bitset {
         self.data[pos / 8] ^= 0x01 << pos % 8;
     }
 
-    fn set(&mut self, pos: usize, value: bool) {
+    pub fn set(&mut self, pos: usize, value: bool) {
         if self.read(pos) != value {
             self.flip(pos);
         }
@@ -533,6 +636,24 @@ mod tests {
         assert_eq!(next_prime(39), 41);
         assert_eq!(next_prime(98), 101);
         assert_eq!(next_prime(1_299_821), 1_299_827);
+    }
+
+#[test]
+    fn t_nth_prime() {
+        assert_eq!(nth_prime(0), 2);
+        assert_eq!(nth_prime(1), 3);
+        assert_eq!(nth_prime(2), 5);
+        assert_eq!(nth_prime(3), 7);
+        assert_eq!(nth_prime(4), 11);
+        assert_eq!(nth_prime(5), 13);
+        assert_eq!(nth_prime(25), 101);
+        assert_eq!(nth_prime(1_000_000), 15_485_867);
+    }
+
+#[test]
+#[ignore]
+    fn t_nth_prime_long() {
+        assert_eq!(nth_prime(1_000_000_000), 22_801_763_513);
     }
 }
 

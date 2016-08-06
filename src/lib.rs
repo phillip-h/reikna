@@ -150,7 +150,7 @@ pub mod derivative;
 pub mod factor;
 pub mod figurate;
 pub mod partition;
-pub mod prime;
+#[macro_use] pub mod prime;
 pub mod prime_count;
 pub mod totient;
 
