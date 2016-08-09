@@ -43,6 +43,8 @@
 //! * `func` -- Utility type alias and macro, used heavily in certain
 //!             other modules.
 //!
+//! * `integral` -- Estimate integrals of functions using numeric integration.
+//!
 //! * `partition` -- Compute the value of the number theory partition
 //!                  function.
 //!
@@ -149,6 +151,7 @@ pub mod continued_fraction;
 pub mod derivative;
 pub mod factor;
 pub mod figurate;
+pub mod integral;
 pub mod partition;
 #[macro_use] pub mod prime;
 pub mod prime_count;
