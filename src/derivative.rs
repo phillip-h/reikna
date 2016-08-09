@@ -1,7 +1,8 @@
 //! Module for working with derivatives.
 //!
 //! This module has functions for estimating and evaluating
-//! derivatives of functions with one or more variables.
+//! derivatives of functions and for computing the slope and
+//! concavity of functions at single points.
 
 pub use super::func::*;
 
@@ -216,16 +217,16 @@ mod tests {
         let f_deriv = derivative(&f);
         let f_s_deriv = second_derivative(&f);
 
-        assert_fp!(f(0.0), 5.0, 0.0001);
-        assert_fp!(f(4.0), 69.0, 0.0001);
-        assert_fp!(f(-2.0), -3.0, 0.0001);
+        assert_fp!(f( 0.0),  5.0,  0.0001);
+        assert_fp!(f( 4.0),  69.0, 0.0001);
+        assert_fp!(f(-2.0), -3.0,  0.0001);
 
-        assert_fp!(f_deriv(0.0), 0.0, 0.001);
-        assert_fp!(f_deriv(4.0), 48.0, 0.001);
+        assert_fp!(f_deriv( 0.0), 0.0,  0.001);
+        assert_fp!(f_deriv( 4.0), 48.0, 0.001);
         assert_fp!(f_deriv(-2.0), 12.0, 0.001);
 
-        assert_fp!(f_s_deriv(0.0), 0.0, 0.1);
-        assert_fp!(f_s_deriv(4.0), 24.0, 0.1);
+        assert_fp!(f_s_deriv( 0.0),  0.0,  0.1);
+        assert_fp!(f_s_deriv( 4.0),  24.0, 0.1);
         assert_fp!(f_s_deriv(-2.0), -12.0, 0.1);
 
     }
@@ -238,19 +239,19 @@ mod tests {
         let f_deriv_2 = nth_derivative(1, &f);
         let f_s_deriv_2 = nth_derivative(2, &f);
 
-        assert_eq!(f_deriv(0.0), f_deriv_2(0.0));
+        assert_eq!(f_deriv(0.0),  f_deriv_2(0.0));
         assert_eq!(f_deriv(10.4), f_deriv_2(10.4));
         assert_eq!(f_deriv(56.8), f_deriv_2(56.8));
 
-        assert_eq!(f_s_deriv(0.0), f_s_deriv_2(0.0));
+        assert_eq!(f_s_deriv(0.0),  f_s_deriv_2(0.0));
         assert_eq!(f_s_deriv(40.4), f_s_deriv_2(40.4));
         assert_eq!(f_s_deriv(12.3), f_s_deriv_2(12.3));
 
-        assert_eq!(f_deriv(0.0), slope_at(&f, 0.0));
+        assert_eq!(f_deriv(0.0),  slope_at(&f, 0.0));
         assert_eq!(f_deriv(10.4), slope_at(&f, 10.4));
         assert_eq!(f_deriv(56.8), slope_at(&f, 56.8));
 
-        assert_eq!(f_s_deriv(0.0), concavity_at(&f, 0.0));
+        assert_eq!(f_s_deriv(0.0),  concavity_at(&f, 0.0));
         assert_eq!(f_s_deriv(40.4), concavity_at(&f, 40.4));
         assert_eq!(f_s_deriv(12.3), concavity_at(&f, 12.3));
     }
