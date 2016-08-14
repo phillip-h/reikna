@@ -31,6 +31,9 @@
 //! A list of the modules currently included in this crate, along
 //! with a brief description of each.
 //!
+//! * `aliquot` -- Functions for calcuating aliquot sums, divisor sums,
+//!                and testing for perfect numbers and similar concepts.
+//!
 //! * `continued_fraction` -- Generate and expand continued fractions.
 //!
 //! * `derivative` -- Estimate derivatives of functions, along with slope
@@ -147,13 +150,14 @@
 #[macro_use] mod macros;
 
 #[macro_use] pub mod func;
-pub mod continued_fraction;
-pub mod derivative;
-pub mod factor;
-pub mod figurate;
-pub mod integral;
-pub mod partition;
+             pub mod aliquot;
+             pub mod continued_fraction;
+             pub mod derivative;
+             pub mod factor;
+             pub mod figurate;
+             pub mod integral;
+             pub mod partition;
 #[macro_use] pub mod prime;
-pub mod prime_count;
-pub mod totient;
+             pub mod prime_count;
+             pub mod totient;
 
