@@ -15,7 +15,7 @@
 //!
 //! ``` text
 //! [dependencies]
-//! reikna = "0.6.0"
+//! reikna = "0.10.0"
 //! ```
 //!
 //! and then importing the crate with
