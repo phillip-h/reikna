@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["MAX_PART","Max partition size the functions will calculate"]],"fn":[["part","Calculate the partition function of `n`"],["part_wc","Calculate the partition function of `n` using `cache` to cache previously calculated values."]]});

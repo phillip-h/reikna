@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Rc","A reference-counted pointer type over an immutable value."]],"type":[["Function","Type alias used to represent functions."]]});

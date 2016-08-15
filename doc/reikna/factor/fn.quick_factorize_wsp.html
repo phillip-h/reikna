@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `quick_factorize_wsp` fn in crate `reikna`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, quick_factorize_wsp">
+
+    <title>reikna::factor::quick_factorize_wsp - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>reikna</a>::<wbr><a href='index.html'>factor</a></p><script>window.sidebarCurrent = {name: 'quick_factorize_wsp', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content fn">
+<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>reikna</a>::<wbr><a href='index.html'>factor</a>::<wbr><a class='fn' href=''>quick_factorize_wsp</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-148' class='srclink' href='../../src/reikna/src/factor.rs.html#341-378' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn quick_factorize_wsp(val: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>, sprimes: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>&gt;) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>&gt;</pre><div class='docblock'><p>Return a <code>Vec&lt;u64&gt;</code> of <code>value</code>&#39;s prime factorization,
+using <code>sprimes</code> as a list of small primes;</p>
+
+<p><code>sprimes</code> should be a sorted list of the prime numbers in
+<code>[1, MAX_SMALL_NUM]</code>, or else this function will not
+behave properly. A suitable list can be generated using
+<code>prime::prime_sieve(MAX_SMALL_NUM)</code>.</p>
+
+<p>Alternatively, if only a few values are being factored,
+<code>quick_factorize()</code> can be used in lieu of this function and
+an explicit list of primes.</p>
+
+<p>This function will factor &quot;small&quot; values, i.e., those less
+than <code>MAX_SMALL_NUM</code>, using <code>prime::factorize_wp()</code>, which
+in turn factors by trial division over a list of primes. This
+is the fastest way of factoring relatively small values.</p>
+
+<p>Large values are factored using Brent&#39;s modification of
+Pollard&#39;s Rho Algorithm, implemented in the function <code>rho()</code>.</p>
+
+<p>Note this function can take a long time if the value being 
+factored is a large prime or a value with one very large factor.
+The correct factorization will be returned for these values,
+but it is best to filter them out of any data set being factored
+before hand.</p>
+
+<p>The factor list this function returns is sorted.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>reikna</span>::<span class='ident'>factor</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>reikna</span>::<span class='ident'>prime</span>;
+<span class='kw'>let</span> <span class='ident'>sprimes</span> <span class='op'>=</span> <span class='ident'>prime</span>::<span class='ident'>prime_sieve</span>(<span class='ident'>MAX_SMALL_NUM</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>quick_factorize_wsp</span>(<span class='number'>65_536</span>, <span class='kw-2'>&amp;</span><span class='ident'>sprimes</span>), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>2</span>; <span class='number'>16</span>]);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>quick_factorize_wsp</span>(<span class='number'>9_223_372_036_854_775_807</span>, <span class='kw-2'>&amp;</span><span class='ident'>sprimes</span>), 
+           <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>7</span>, <span class='number'>7</span>, <span class='number'>73</span>, <span class='number'>127</span>, <span class='number'>337</span>, <span class='number'>92737</span>, <span class='number'>649657</span>]);</pre>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "reikna";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

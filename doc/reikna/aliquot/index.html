@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `aliquot` mod in crate `reikna`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, aliquot">
+
+    <title>reikna::aliquot - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>reikna</a></p><script>window.sidebarCurrent = {name: 'aliquot', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>reikna</a>::<wbr><a class='mod' href=''>aliquot</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-10' class='srclink' href='../../src/reikna/src/aliquot.rs.html#1-298' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Module for working with aliquot and divisor sums.</p>
+
+<p>This module contains functions for calculating the 
+aliquot and divisor sums of numbers, along with functions
+for testing for perfect numbers and similar concepts.</p>
+</div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.abundant_number.html'
+                                  title='reikna::aliquot::abundant_number'>abundant_number</a></td>
+                           <td class='docblock short'>
+                                <p>Return <code>true</code> if <code>n</code> is an abundant number,
+that is, a number whose aliquot sum is greater
+than itself.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.aliquot_sum.html'
+                                  title='reikna::aliquot::aliquot_sum'>aliquot_sum</a></td>
+                           <td class='docblock short'>
+                                <p>Return the aliquot sum of a positive integer <code>n</code>,
+that is, the sum of all of <code>n</code>&#39;s proper divisors.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.amicable_number.html'
+                                  title='reikna::aliquot::amicable_number'>amicable_number</a></td>
+                           <td class='docblock short'>
+                                <p>Return <code>true</code> if <code>n</code> is a member of an amicable pair,
+that is, a pair of numbers whose aliquot sums equal
+each other.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.deficient_number.html'
+                                  title='reikna::aliquot::deficient_number'>deficient_number</a></td>
+                           <td class='docblock short'>
+                                <p>Return <code>true</code> if <code>n</code> is a deficient number,
+that is, a number whose aliquot sum is less
+than itself.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.divisor_sum.html'
+                                  title='reikna::aliquot::divisor_sum'>divisor_sum</a></td>
+                           <td class='docblock short'>
+                                <p>Return the divisor sum of a positive integer <code>n</code>,
+that is, the sum of all of <code>n</code>&#39;s divisors.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.perfect_number.html'
+                                  title='reikna::aliquot::perfect_number'>perfect_number</a></td>
+                           <td class='docblock short'>
+                                <p>Return <code>true</code> if <code>n</code> is a perfect number,
+that is, a number whose aliquot sum is equal
+to itself.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.quasiperfect_number.html'
+                                  title='reikna::aliquot::quasiperfect_number'>quasiperfect_number</a></td>
+                           <td class='docblock short'>
+                                <p>Return <code>true</code> if <code>n</code> is a quasiperfect number,
+that is, a number whose aliquot sum is exactly
+one greater than itself.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.sociable_number.html'
+                                  title='reikna::aliquot::sociable_number'>sociable_number</a></td>
+                           <td class='docblock short'>
+                                <p>Return <code>true</code> if <code>n</code> is a sociable number,
+that is, a number whose aliquot sums form a
+cyclic pattern, e.g.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.superperfect_number.html'
+                                  title='reikna::aliquot::superperfect_number'>superperfect_number</a></td>
+                           <td class='docblock short'>
+                                <p>Return <code>true</code> if <code>n</code> is a superperfect number,
+that is, a number which satisfies</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "reikna";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

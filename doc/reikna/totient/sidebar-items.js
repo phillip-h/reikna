@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["PHI_SYMBOL","Constant string of the uppercase Phi symbol, often used to represent the totient function."]],"fn":[["totient","Calculate the value of Euler's totient function for `n`."],["totient_all","Calculate the value of Euler's totient function for each value in `data`, and return a new `Vec<u64>` of the results."]]});
