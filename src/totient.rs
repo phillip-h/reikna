@@ -67,7 +67,7 @@ pub fn totient(n: u64) -> u64 {
 /// assert_eq!(totient_all(vec![81]), vec![54]);
 /// ```
 pub fn totient_all(data: Vec<u64>) -> Vec<u64> {
-    if data.len() == 0 {
+    if data.is_empty() {
         return Vec::new();
     }
 

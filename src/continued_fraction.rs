@@ -43,7 +43,7 @@ pub fn square_root(x: u64) -> ContinuedFraction {
 
     let mut expansion: ContinuedFraction = vec![a];
 
-    if a0 == a0.floor() {
+    if (a0 - a0.floor()).abs() < ::std::f64::EPSILON {
         return expansion;
     }
 
@@ -145,7 +145,7 @@ pub fn expand_fraction_ntimes(fraction: &ContinuedFraction,
     let mut num = 1; 
     let mut den = *frac.last().unwrap();
     for i in (1..frac.len()).rev() {
-        num = frac[i] * den + num;
+        num += frac[i] * den;
         mem::swap(&mut den, &mut num);
     }
     
@@ -223,7 +223,7 @@ pub fn expand_f64_ntimes(fraction: &ContinuedFraction,
     let mut num = 1f64; 
     let mut den = *frac.last().unwrap() as f64;
     for i in (1..frac.len()).rev() {
-        num = frac[i] as f64 * den + num;
+        num += frac[i] as f64 * den;
         mem::swap(&mut den, &mut num);
     }
     
@@ -281,7 +281,7 @@ pub fn expand_f64(fraction: &ContinuedFraction) -> f64 {
 /// [17]
 /// ```
 pub fn to_string(fraction: &ContinuedFraction) -> String {
-    if fraction.len() == 0 {
+    if fraction.is_empty() {
         return "[]".to_string();
     }
 

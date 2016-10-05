@@ -38,7 +38,7 @@ pub const DEFAULT_PRECISION: u64 = 4;
 ///# }
 /// ```
 pub fn integrate_wp(f: &Function, a: f64, b: f64, p: u64) -> f64 {
-    if a == b || p == 0 {
+    if (a - b).abs() < ::std::f64::EPSILON || p == 0 {
         return 0.0;
     }
 

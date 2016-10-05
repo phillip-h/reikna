@@ -49,7 +49,7 @@ pub fn gcd(mut a: u64, mut b: u64) -> u64 {
 /// assert_eq!(gcd_all(&vec![16, 4, 32]), 4);
 /// assert_eq!(gcd_all(&vec![3, 10, 18]), 1);
 /// ```
-pub fn gcd_all(set: &Vec<u64>) -> u64 {
+pub fn gcd_all(set: &[u64]) -> u64 {
     let mut gcd_: u64 = 0;
     for n in set {
         gcd_ = gcd(*n, gcd_);
@@ -115,7 +115,7 @@ pub fn lcm(a: u64, b: u64) -> u64 {
 /// assert_eq!(lcm_all(&vec![8, 9, 21]), 504);
 /// assert_eq!(lcm_all(&vec![4, 7, 12, 21, 42]), 84);
 /// ```
-pub fn lcm_all(set: &Vec<u64>) -> u64 {
+pub fn lcm_all(set: &[u64]) -> u64 {
     let mut lcm_ = 1;
     for n in set {
         lcm_ = lcm(*n, lcm_);
@@ -267,9 +267,10 @@ pub fn rho(val: u64, entropy: u64) -> u64 {
             for _ in 0..min(u, r - k) {
                 y = f(y);
 
-                match x > y {
-                    true  => q = q.wrapping_mul(x - y) % val,
-                    false => q = q.wrapping_mul(y - x) % val,
+                if x > y {
+                    q = q.wrapping_mul(x - y) % val;
+                } else {
+                    q = q.wrapping_mul(y - x) % val;
                 }
             }
 
@@ -284,9 +285,10 @@ pub fn rho(val: u64, entropy: u64) -> u64 {
     while fac == val || fac <= 1 {
         y_old = f(y_old);
 
-        match x > y_old {
-            true  => fac = gcd(x - y_old, val),
-            false => fac = gcd(y_old - x, val),
+        if x > y_old {
+            fac = gcd(x - y_old, val);
+        } else {
+            fac = gcd(y_old - x, val);
         }
     }
 
@@ -339,7 +341,7 @@ pub const MAX_SMALL_NUM: u64 = 65_536;
 ///            vec![7, 7, 73, 127, 337, 92737, 649657]);
 /// ```
 pub fn quick_factorize_wsp(mut val: u64, 
-                           sprimes: &Vec<u64>) -> Vec<u64> {
+                           sprimes: &[u64]) -> Vec<u64> {
     if val < MAX_SMALL_NUM {
         return prime::factorize_wp(val, sprimes);
     }

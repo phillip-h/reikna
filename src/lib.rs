@@ -24,7 +24,7 @@
 //! #[macro_use] extern crate reikna;
 //! ```
 //!
-//! Make sure to include the #[macro_use] part!
+//! Make sure to include the `#[macro_use]` part!
 //!
 //! # Modules
 //!

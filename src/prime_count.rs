@@ -68,8 +68,8 @@ pub fn prime_count(x: u64) -> u64 {
 /// assert_eq!(prime_count_all(&vec![1, 2, 3]), vec![0, 1, 2]);
 /// assert_eq!(prime_count_all(&vec![100]), vec![25]);
 /// ```
-pub fn prime_count_all(data: &Vec<u64>) -> Vec<u64> {
-    if data.len() == 0 {
+pub fn prime_count_all(data: &[u64]) -> Vec<u64> {
+    if data.is_empty() {
         return Vec::new();
     }
 
@@ -94,9 +94,10 @@ pub fn prime_count_all(data: &Vec<u64>) -> Vec<u64> {
             continue;
         }
 
-        match data[i] < 6 {
-            true  => counts.push(prime_count(data[i])),
-            false => counts.push(lehmer(data[i], &primes, &mut phi_cache)),
+        if data[i] < 6 {
+            counts.push(prime_count(data[i]));
+        } else {
+            counts.push(lehmer(data[i], &primes, &mut phi_cache));
         }
     }
 
@@ -118,7 +119,7 @@ const SMALL_PI: [u64; 100] =
  22, 22, 22, 23, 23, 23, 23, 23, 23, 24,
  24, 24, 24, 24, 24, 24, 24, 25, 25, 25];
 
-fn lehmer(x: u64, primes: &Vec<u64>, phi_cache: &mut CacheT) -> u64 {
+fn lehmer(x: u64, primes: &[u64], phi_cache: &mut CacheT) -> u64 {
     if x < 100 {
         return SMALL_PI[x as usize];
     }
@@ -156,7 +157,7 @@ fn lehmer(x: u64, primes: &Vec<u64>, phi_cache: &mut CacheT) -> u64 {
     pi
 }
 
-fn phi(m: u64, n: u64, primes: &Vec<u64>, cache: &mut CacheT) -> u64 {
+fn phi(m: u64, n: u64, primes: &[u64], cache: &mut CacheT) -> u64 {
     if n == 0 || m == 0 {
         return m;
     }
@@ -183,7 +184,7 @@ fn phi(m: u64, n: u64, primes: &Vec<u64>, cache: &mut CacheT) -> u64 {
     phi(m / primes[n as usize - 1], n - 1, primes, cache)
 }
 
-fn num_below(x: u64, vec: &Vec<u64>) -> u64 {
+fn num_below(x: u64, vec: &[u64]) -> u64 {
     for i in 0..vec.len() {
         if vec[i] > x {
             return i as u64;

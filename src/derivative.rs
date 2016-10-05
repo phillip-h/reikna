@@ -108,7 +108,7 @@ pub fn nth_derivative(n: u64, f: &Function) -> Function {
 /// f'(5)  = 10.00000100148668
 /// ```
 pub fn derivative(f: &Function) -> Function {
-    nth_derivative(1, &f)
+    nth_derivative(1, f)
 }
 
 /// Return a function estimating the second derivative of `f`.
@@ -140,7 +140,7 @@ pub fn derivative(f: &Function) -> Function {
 /// f''(5) = 2.000177801164682
 /// ```
 pub fn second_derivative(f: &Function) -> Function {
-    nth_derivative(2, &f)
+    nth_derivative(2, f)
 }
 
 /// Estimate the value of the derivative of `f` at `x`

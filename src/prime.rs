@@ -4,7 +4,7 @@
 //! using a variety of different sieves, testing if numbers
 //! are prime or composite, and preforming simple factorizations.
 
-/// Return a `Vec<u64>` of the primes in [1, max_u64] using the 
+/// Return a `Vec<u64>` of the primes in [1, `max_u64`] using the 
 /// Sieve of Atkin.
 ///
 /// This function is best suited for sieving with relatively
@@ -55,14 +55,7 @@ pub fn atkin(max_u64: u64) -> Vec<u64> {
             index = 4 * x * x + y * y;
             if index <= max {
                 match index % 60 {
-                    1  => sieve.flip(index),
-                    13 => sieve.flip(index),
-                    17 => sieve.flip(index),
-                    29 => sieve.flip(index),
-                    37 => sieve.flip(index),
-                    41 => sieve.flip(index),
-                    49 => sieve.flip(index),
-                    53 => sieve.flip(index),
+                    1 | 13 | 17 | 29 | 37 | 41 |49 | 53  => sieve.flip(index),
                     _ => (),
                 }
             }
@@ -70,10 +63,7 @@ pub fn atkin(max_u64: u64) -> Vec<u64> {
             index = 3 * x * x + y * y;
             if index <= max {
                 match index % 60 {
-                    7  => sieve.flip(index),
-                    19 => sieve.flip(index),
-                    31 => sieve.flip(index),
-                    43 => sieve.flip(index),
+                    7 | 19 | 31 | 43  => sieve.flip(index),
                     _ => (),
                 }
             }
@@ -85,10 +75,7 @@ pub fn atkin(max_u64: u64) -> Vec<u64> {
             index = 3 * x * x - y * y;
             if index <= max {
                 match index % 60 {
-                    11 => sieve.flip(index),
-                    23 => sieve.flip(index),
-                    47 => sieve.flip(index),
-                    59 => sieve.flip(index),
+                    11 | 23 | 47 | 59 => sieve.flip(index),
                     _ => (),
                 }
             }
@@ -111,7 +98,7 @@ pub fn atkin(max_u64: u64) -> Vec<u64> {
     primes
 }
 
-/// Return a `Vec<u64>` of the primes in [1, max_u64] using the 
+/// Return a `Vec<u64>` of the primes in [1, `max_u64`] using the 
 /// Sieve of Eratosthenes.
 ///
 /// This function is probably not very useful to most users, 
@@ -161,7 +148,7 @@ pub fn eratosthenes(max_u64: u64) -> Vec<u64> {
 
 /// Size of the segmented sieve segments in `segmented_eratosthenes()`
 ///
-/// Also used to determine when prime_sieve() should
+/// Also used to determine when `prime_sieve()` should
 /// switch to using the segmented sieve from the Sieve of Atkin.
 pub const S_SIEVE_SIZE: u64 = 65_536;
 
@@ -342,7 +329,7 @@ pub fn nth_prime(n: u64) -> u64 {
                                         count += 1; 
                                      });
 
-    panic!("Nth prime of N = {} is larger than u64::MAX!");
+    panic!("Nth prime of N = {} is larger than u64::MAX!", n);
 }
 
 /// Idiomatic prime sieve, returns a `Vec<u64>` of primes in [1, max].
@@ -438,7 +425,7 @@ pub fn is_prime(value: u64) -> bool {
 /// use reikna::prime::factorize;
 /// assert_eq!(factorize(200), vec![2, 2, 2, 5, 5]); 
 /// ```
-pub fn factorize_wp(mut value: u64, primes: &Vec<u64>) -> Vec<u64> {
+pub fn factorize_wp(mut value: u64, primes: &[u64]) -> Vec<u64> {
     let mut factors: Vec<u64> = Vec::new();
 
     if value <= 1 {
@@ -529,17 +516,17 @@ impl Bitset {
     }
 
     pub fn one(&mut self) {
-        for byte in self.data.iter_mut() {
+        for byte in &mut self.data {
             *byte = 0xff;
         }
     }
 
     pub fn read(&self, pos: usize) -> bool {
-        self.data[pos / 8] & (0x01 << pos % 8) != 0x00
+        self.data[pos / 8] & 0x01 << (pos % 8) != 0x00
     }
 
     fn flip(&mut self, pos: usize) {
-        self.data[pos / 8] ^= 0x01 << pos % 8;
+        self.data[pos / 8] ^= 0x01 << (pos % 8);
     }
 
     pub fn set(&mut self, pos: usize, value: bool) {
