@@ -119,7 +119,7 @@ const SMALL_PI: [u64; 100] =
  22, 22, 22, 23, 23, 23, 23, 23, 23, 24,
  24, 24, 24, 24, 24, 24, 24, 25, 25, 25];
 
-fn lehmer(x: u64, primes: &[u64], phi_cache: &mut CacheT) -> u64 {
+fn lehmer(x: u64, primes: &Vec<u64>, phi_cache: &mut CacheT) -> u64 {
     if x < 100 {
         return SMALL_PI[x as usize];
     }
@@ -184,14 +184,12 @@ fn phi(m: u64, n: u64, primes: &[u64], cache: &mut CacheT) -> u64 {
     phi(m / primes[n as usize - 1], n - 1, primes, cache)
 }
 
-fn num_below(x: u64, vec: &[u64]) -> u64 {
-    for i in 0..vec.len() {
-        if vec[i] > x {
-            return i as u64;
-        }
+fn num_below(x: u64, vec: &Vec<u64>) -> u64 {
+    let res = vec.binary_search(&x);
+    match res {
+        Ok(n)  => n as u64 + 1,
+        Err(n) => n as u64,
     }
-
-    vec.len() as u64
 }
 
 #[cfg(test)]
