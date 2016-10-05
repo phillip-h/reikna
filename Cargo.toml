@@ -1,6 +1,6 @@
 [package]
 name = "reikna"
-version = "0.12.0"
+version = "0.12.1"
 authors = ["Phillip Heikoop <phillip-h@users.noreply.github.com>"]
 
 description = "A work in progress math library"
