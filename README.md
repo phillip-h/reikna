@@ -1,3 +1,8 @@
+## NOTE: This project is not actively developed.
+
+I will try to fix bugs as reported. Contact me if you are interested
+in taking over the project.
+
 # reikna
 
 [![](https://travis-ci.org/phillip-h/reikna.svg?branch=master)](https://travis-ci.org/phillip-h/reikna) [![](https://img.shields.io/crates/v/reikna.svg)](https://crates.io/crates/reikna)
