@@ -12,3 +12,6 @@ keywords = ["math", "mathematics"]
 license = "MIT"
 
 [dependencies]
+
+[badges]
+maintenance = { status = "passively-maintained" }
