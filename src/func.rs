@@ -13,7 +13,7 @@ pub use std::rc::Rc;
 ///
 /// Functions are stored in an `Rc` so they can be `cloned()`
 /// and subsequently consumed in other functions.
-pub type Function = Rc<Fn(f64) -> f64>;
+pub type Function = Rc<dyn Fn(f64) -> f64>;
 
 /// Macro for creating a `Function`.
 ///
