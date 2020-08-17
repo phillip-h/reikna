@@ -287,8 +287,12 @@ pub fn rho(val: u64, entropy: u64) -> u64 {
 
         if x > y_old {
             fac = gcd(x - y_old, val);
-        } else {
+        } else if x < y_old {
             fac = gcd(y_old - x, val);
+        } else {
+            // the algorithm has failed for this entropy,
+            // return the factor as-is
+            return fac;
         }
     }
 
@@ -362,11 +366,11 @@ pub fn quick_factorize_wsp(mut val: u64,
 
         let factor = rho(val, e);
 
-        if prime::is_prime(factor) {
-            factors.push(factor);
-        } else if factor == val {
+        if factor == val || factor == 1 {
             e += 1;
             continue;
+        } else if prime::is_prime(factor) {
+            factors.push(factor);
         } else {
             factors.extend_from_slice(
                    &quick_factorize_wsp(factor, sprimes));
@@ -416,6 +420,7 @@ mod tests {
     fn t_gcd() {
         assert_eq!(gcd(0, 0), 0);
         assert_eq!(gcd(0, 10), 10);
+        assert_eq!(gcd(10, 0), 10);
         assert_eq!(gcd(24, 12), 12);
         assert_eq!(gcd(8, 12), 4);
         assert_eq!(gcd(5125215, 890898), 3);
@@ -499,6 +504,8 @@ mod tests {
         assert_eq!(quick_factorize(1), Vec::new());
 
         let test_vals = vec![125, 97, 168, 256, 1789, 34567,
+                             97020,
+                             103685,
                              653123,
                              4593140,
                              13461780,
